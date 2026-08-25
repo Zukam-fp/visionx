@@ -1,0 +1,169 @@
+(function () {
+  /* ============ 1. SCROLL-SCRUBBED VIDEO ============ */
+
+  const video = document.querySelector('video');
+  let current = 0,
+    duration = 0;
+
+  video.addEventListener('loadedmetadata', () => {
+    duration = video.duration;
+  });
+
+  function loop() {
+    requestAnimationFrame(loop);
+    const dur = duration || video.duration;
+    if (!dur) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    const target = progress * dur;
+    current += (target - current) * 0.06; // lerp smoothing — very smooth
+    if (Math.abs(target - current) < 0.01) current = target;
+    if (video.readyState >= 2 && Math.abs(video.currentTime - current) > 0.001) video.currentTime = current;
+
+    updateAboutReveal();
+  }
+  requestAnimationFrame(loop);
+
+  /* ============ PRELOADER ============ */
+
+  const preloader = document.getElementById('preloader');
+  const preloaderText = document.getElementById('preloader-text');
+  let hidden = false;
+
+  function hidePreloader() {
+    if (hidden) return;
+    hidden = true;
+    clearTimeout(fallbackTimer);
+    preloader.classList.add('is-hidden');
+    document.body.classList.add('is-loaded');
+  }
+
+  video.addEventListener('progress', () => {
+    if (video.buffered.length && video.duration && isFinite(video.duration)) {
+      const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+      const pct = Math.min(100, Math.round((bufferedEnd / video.duration) * 100));
+      preloaderText.textContent = pct + '%';
+    }
+  });
+
+  video.addEventListener('canplaythrough', hidePreloader);
+  const fallbackTimer = setTimeout(hidePreloader, 6000);
+
+  /* ============ 2. SCROLL-REVEAL SYSTEM ============ */
+
+  const revealTargets = document.querySelectorAll('.reveal, .reveal-card');
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0, rootMargin: '0px 0px -8% 0px' }
+  );
+  revealTargets.forEach((el) => revealObserver.observe(el));
+
+  /* ============ 5. ABOUT — SCROLL WORD REVEAL ============ */
+
+  const aboutLines = [
+    'Le meilleur code ne se voit pas.',
+    'Il se ressent — dans la fluidité, /',
+    'la clarté de chaque interaction,',
+    'et ce qui reste après le clic.',
+  ];
+
+  const aboutText = document.getElementById('aboutText');
+  aboutLines.forEach((line, i) => {
+    const lineEl = aboutText.querySelector('[data-line="' + (i + 1) + '"]');
+    line.split(' ').forEach((word, wi, arr) => {
+      const span = document.createElement('span');
+      span.className = 'w';
+      span.textContent = word;
+      lineEl.appendChild(span);
+      if (wi < arr.length - 1) lineEl.appendChild(document.createTextNode(' '));
+    });
+  });
+
+  const aboutWords = aboutText.querySelectorAll('.w');
+
+  function updateAboutReveal() {
+    const rect = aboutText.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const start = vh * 0.85;
+    const end = vh * 0.15;
+    let progress = (start - rect.top) / (start - end);
+    progress = Math.min(1, Math.max(0, progress));
+    const revealCount = Math.round(progress * aboutWords.length);
+    aboutWords.forEach((w, i) => {
+      w.style.color = i < revealCount ? '#ffffff' : 'rgba(255, 255, 255, 0.35)';
+    });
+  }
+  updateAboutReveal();
+
+  /* ============ 6. SERVICES — HOVER/CLICK PANEL SWITCH ============ */
+
+  const services = [
+    {
+      desc: 'On construit des applications web complètes — base de données, logique métier et interface — pensées pour tenir en production, pas juste pour la démo.',
+      tags: ['Next.js', 'Node.js', 'Prisma'],
+      images: ['images/service-fullstack-1.png', 'images/service-fullstack-2.png'],
+    },
+    {
+      desc: "Des interfaces claires et sans friction — structure lisible, hiérarchie visuelle nette, et des interactions qui guident sans jamais distraire.",
+      tags: ['Figma', 'Design System', 'Prototypage'],
+      images: ['images/service-uiux-1.png', 'images/service-uiux-2.png'],
+    },
+    {
+      desc: "On intègre les outils de génération IA (image, vidéo, texte) directement dans le pipeline créatif — pour produire plus vite sans sacrifier la direction artistique.",
+      tags: ['Génération IA', 'Automatisation', 'Prompting'],
+      images: ['images/service-ai-1.png', 'images/service-ai-2.png'],
+    },
+    {
+      desc: "On développe aussi des applications mobiles et des jeux, sur web comme sur mobile — la même exigence produit, adaptée à chaque plateforme.",
+      tags: ['React Native', 'Unity', 'WebGL'],
+      images: ['images/service-mobile-1.png', 'images/service-mobile-2.png'],
+    },
+  ];
+
+  const svcImg1 = document.getElementById('svcImg1');
+  const svcImg2 = document.getElementById('svcImg2');
+  const svcDesc = document.getElementById('svcDesc');
+  const svcTags = document.getElementById('svcTags');
+  const svcRows = document.querySelectorAll('.svc-row');
+
+  function setActiveService(index) {
+    const svc = services[index];
+    svcImg1.src = svc.images[0];
+    svcImg2.src = svc.images[1];
+    svcDesc.textContent = svc.desc;
+    svcTags.innerHTML = '';
+    svc.tags.forEach((tag) => {
+      const pill = document.createElement('span');
+      pill.className = 'tag-pill';
+      pill.textContent = tag;
+      svcTags.appendChild(pill);
+    });
+  }
+
+  svcRows.forEach((row) => {
+    const index = Number(row.getAttribute('data-index'));
+    row.addEventListener('mouseenter', () => setActiveService(index));
+    row.addEventListener('click', () => setActiveService(index));
+  });
+
+  setActiveService(0);
+
+  /* ============ 9. NAV BUTTONS — ORBITING LIGHT PATH ============ */
+
+  const orbitButtons = document.querySelectorAll('.talk-btn, .nav-btn');
+  const setOrbitPath = (btn) => {
+    const w = btn.offsetWidth;
+    const h = btn.offsetHeight;
+    btn.style.setProperty('--path', `path('M 0 0 H ${w} V ${h} H 0 V 0')`);
+  };
+  const setAllOrbitPaths = () => orbitButtons.forEach(setOrbitPath);
+  setAllOrbitPaths();
+  window.addEventListener('resize', setAllOrbitPaths);
+})();
