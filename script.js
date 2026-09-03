@@ -115,16 +115,6 @@
       tags: ['Figma', 'Design System', 'Prototypage'],
       images: ['images/service-uiux-1.png', 'images/service-uiux-2.png'],
     },
-    {
-      desc: "On intègre les outils de génération IA (image, vidéo, texte) directement dans le pipeline créatif — pour produire plus vite sans sacrifier la direction artistique.",
-      tags: ['Génération IA', 'Automatisation', 'Prompting'],
-      images: ['images/service-ai-1.png', 'images/service-ai-2.png'],
-    },
-    {
-      desc: "On développe aussi des applications mobiles et des jeux, sur web comme sur mobile — la même exigence produit, adaptée à chaque plateforme.",
-      tags: ['React Native', 'Unity', 'WebGL'],
-      images: ['images/service-mobile-1.png', 'images/service-mobile-2.png'],
-    },
   ];
 
   const svcImg1 = document.getElementById('svcImg1');

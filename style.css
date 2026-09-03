@@ -346,10 +346,20 @@ body.is-loaded #heroTitleWrap {
   line-height: 0.9;
 }
 
+#heroSubtitle {
+  margin-top: -6px;
+  font-size: clamp(64px, 10.5vw, 175px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
 #heroInfo {
   position: absolute;
   left: 70px;
-  bottom: 140px;
+  bottom: 60px;
   width: 640px;
   display: flex;
   flex-direction: column;
@@ -383,7 +393,7 @@ body.is-loaded #heroInfo {
   position: absolute;
   left: 70px;
   right: 470px;
-  bottom: 44px;
+  bottom: 20px;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%);
@@ -428,12 +438,12 @@ body.is-loaded #heroInfo {
 #heroCard {
   position: absolute;
   right: 70px;
-  bottom: 44px;
-  width: 342px;
+  bottom: 6px;
+  width: 440px;
 }
 
 .hero-card-img {
-  height: 248px;
+  height: 320px;
   border-radius: 14px;
   overflow: hidden;
 }
@@ -678,7 +688,7 @@ body.is-loaded #heroInfo {
 }
 
 .pf-card-offset {
-  margin-left: 100px;
+  margin-left: 40px;
 }
 
 .pf-media {
@@ -702,7 +712,7 @@ body.is-loaded #heroInfo {
 }
 
 .pf-media-1 img {
-  max-width: 520px;
+  max-width: 500px;
   width: 100%;
 }
 
@@ -712,17 +722,17 @@ body.is-loaded #heroInfo {
 }
 
 .pf-media-3 img {
-  max-width: 380px;
+  max-width: 500px;
   width: 100%;
 }
 
 .pf-media-4 img {
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
 }
 
 .pf-media-5 img {
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
 }
 
