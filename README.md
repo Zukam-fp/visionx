@@ -32,4 +32,4 @@ images/          Captures d'écran des projets + illustrations services
 
 ## Contact
 
-[zukam.fp@outlook.com](mailto:zukam.fp@outlook.com)
+[visionxstudio.pro@gmail.com](mailto:visionxstudio.pro@gmail.com)
