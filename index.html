@@ -244,7 +244,33 @@
 
             <div class="pf-card pf-card-offset reveal-card" style="--order: 5">
               <div class="pf-media pf-media-5">
-                <img src="images/project-coach-sportif.png" alt="Capture d'écran du site Coach Sportif" />
+                <div
+                  class="pf-thumb pf-thumb--video"
+                  role="button"
+                  tabindex="0"
+                  aria-label="Voir la présentation vidéo du projet PowerFit"
+                  data-video="powerfit"
+                  data-title="PowerFit — Vitrine coach sportif"
+                >
+                  <img src="images/project-coach-sportif.png" alt="Aperçu du site PowerFit" />
+                  <video
+                    class="pf-thumb__video"
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    tabindex="-1"
+                    poster="media/powerfit.jpg"
+                  >
+                    <source src="media/powerfit.webm" type="video/webm" />
+                    <source src="media/powerfit.mp4" type="video/mp4" />
+                  </video>
+                  <span class="pf-thumb__play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                </div>
                 <div class="pf-rail">
                   <span class="pf-dash"></span>
                   <span class="pf-year">2025°</span>
@@ -296,7 +322,33 @@
 
             <div class="pf-card pf-card-offset reveal-card" style="--order: 9">
               <div class="pf-media pf-media-3">
-                <img src="images/project-vanta.png" alt="Capture d'écran du site Vanta" />
+                <div
+                  class="pf-thumb pf-thumb--video"
+                  role="button"
+                  tabindex="0"
+                  aria-label="Voir la présentation vidéo du projet Vanta"
+                  data-video="vanta"
+                  data-title="Vanta — Vitrine haute horlogerie"
+                >
+                  <img src="images/project-vanta.png" alt="Aperçu du site Vanta" />
+                  <video
+                    class="pf-thumb__video"
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    tabindex="-1"
+                    poster="media/vanta.jpg"
+                  >
+                    <source src="media/vanta.webm" type="video/webm" />
+                    <source src="media/vanta.mp4" type="video/mp4" />
+                  </video>
+                  <span class="pf-thumb__play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                </div>
                 <div class="pf-rail">
                   <span class="pf-dash"></span>
                   <span class="pf-year">2026°</span>
@@ -377,7 +429,33 @@
 
             <div class="pf-card reveal-card" style="--order: 4">
               <div class="pf-media pf-media-4">
-                <img src="images/project-site-location-auto.png" alt="Capture d'écran du site Location Auto" />
+                <div
+                  class="pf-thumb pf-thumb--video"
+                  role="button"
+                  tabindex="0"
+                  aria-label="Voir la présentation vidéo du projet Vitesse Elite"
+                  data-video="vitesse-elite"
+                  data-title="Vitesse Elite — Location de véhicules de luxe"
+                >
+                  <img src="images/project-site-location-auto.png" alt="Aperçu du site Vitesse Elite" />
+                  <video
+                    class="pf-thumb__video"
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    tabindex="-1"
+                    poster="media/vitesse-elite.jpg"
+                  >
+                    <source src="media/vitesse-elite.webm" type="video/webm" />
+                    <source src="media/vitesse-elite.mp4" type="video/mp4" />
+                  </video>
+                  <span class="pf-thumb__play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                </div>
                 <div class="pf-rail">
                   <span class="pf-dash"></span>
                   <span class="pf-year">2025°</span>
@@ -544,6 +622,27 @@
           </div>
         </div>
       </section>
+    </div>
+
+    <!-- Lightbox vidéo projet -->
+    <div class="pv-modal" id="pvModal" hidden>
+      <div class="pv-modal__backdrop" data-pv-close></div>
+      <div
+        class="pv-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pvModalTitle"
+      >
+        <button class="pv-modal__close" type="button" data-pv-close aria-label="Fermer l'aperçu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+        <div class="pv-modal__frame">
+          <video id="pvModalPlayer" controls playsinline preload="none"></video>
+        </div>
+        <p class="pv-modal__title" id="pvModalTitle"></p>
+      </div>
     </div>
 
     <script src="script.js"></script>
