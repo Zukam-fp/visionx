@@ -696,44 +696,109 @@ body.is-loaded #heroInfo {
   display: flex;
   align-items: flex-start;
   gap: 16px;
+  cursor: pointer;
 }
 
-.pf-media img {
-  border-radius: 4px;
+.pf-visual {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
   aspect-ratio: 16 / 9;
-  object-fit: contain;
-  background: #0d0605;
+  border-radius: 4px;
   overflow: hidden;
+  background: #0d0605;
+}
+
+.pf-visual .pf-poster,
+.pf-visual .pf-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.pf-media:hover img {
+.pf-visual .pf-video {
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pf-media.is-playing .pf-visual .pf-video {
+  opacity: 1;
+}
+
+.pf-media:hover .pf-visual .pf-poster,
+.pf-media:hover .pf-visual .pf-video {
   transform: scale(1.05);
 }
 
-.pf-media-1 img {
-  max-width: 500px;
-  width: 100%;
+/* ── PROJECT VIDEO MODAL ───────────────────────────────── */
+
+.pf-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: rgba(5, 3, 2, 0.92);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease;
+  z-index: 999;
 }
 
-.pf-media-2 img {
-  max-width: 500px;
-  width: 100%;
+.pf-modal.is-open {
+  opacity: 1;
+  visibility: visible;
 }
 
-.pf-media-3 img {
-  max-width: 500px;
+.pf-modal-inner {
+  position: relative;
   width: 100%;
+  max-width: 1100px;
 }
 
-.pf-media-4 img {
-  max-width: 500px;
-  width: 100%;
+.pf-modal-title {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
 }
 
-.pf-media-5 img {
-  max-width: 500px;
+.pf-modal-video {
   width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  background: #000;
+  display: block;
+}
+
+.pf-modal-close {
+  position: absolute;
+  top: -52px;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.pf-modal-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+body.modal-open {
+  overflow: hidden;
 }
 
 .pf-rail {
@@ -789,20 +854,8 @@ body.is-loaded #heroInfo {
   margin-top: 22px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
-}
-
-.pf-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.pf-tags .tag-pill {
-  border-color: rgba(255, 255, 255, 0.18);
-  padding: 11px 20px;
-  font-size: 15px;
 }
 
 /* ============ 8. ABOUT ME ============ */
