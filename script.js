@@ -145,6 +145,70 @@
 
   setActiveService(0);
 
+  /* ============ 7. PROJECT CARDS — HOVER PREVIEW + VIDEO MODAL ============ */
+
+  const pfModal = document.getElementById('pfModal');
+  const pfModalVideo = document.getElementById('pfModalVideo');
+  const pfModalClose = document.getElementById('pfModalClose');
+  const pfModalTitle = document.getElementById('pfModalTitle');
+
+  function openProjectModal(src, poster, title) {
+    if (!src || !pfModal) return;
+    pfModalVideo.src = src;
+    pfModalVideo.poster = poster || '';
+    pfModalTitle.textContent = title || '';
+    pfModal.classList.add('is-open');
+    pfModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    pfModalVideo.currentTime = 0;
+    pfModalVideo.play().catch(() => {});
+  }
+
+  function closeProjectModal() {
+    if (!pfModal) return;
+    pfModal.classList.remove('is-open');
+    pfModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    pfModalVideo.pause();
+    pfModalVideo.removeAttribute('src');
+    pfModalVideo.load();
+  }
+
+  if (pfModal) {
+    pfModalClose.addEventListener('click', closeProjectModal);
+    pfModal.addEventListener('click', (e) => {
+      if (e.target === pfModal) closeProjectModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && pfModal.classList.contains('is-open')) closeProjectModal();
+    });
+  }
+
+  document.querySelectorAll('.pf-media[data-video]').forEach((media) => {
+    const preview = media.querySelector('.pf-video');
+    const videoSrc = media.getAttribute('data-video');
+    const poster = media.getAttribute('data-poster');
+    const title = media.closest('.pf-card')?.querySelector('.pf-title')?.textContent || '';
+
+    preview?.addEventListener('playing', () => media.classList.add('is-playing'));
+
+    media.addEventListener('mouseenter', () => {
+      if (preview && !preview.src && preview.dataset.src) preview.src = preview.dataset.src;
+      preview?.play().catch(() => {});
+    });
+    media.addEventListener('mouseleave', () => {
+      media.classList.remove('is-playing');
+      if (!preview) return;
+      preview.pause();
+      preview.currentTime = 0;
+    });
+
+    media.addEventListener('click', (e) => {
+      e.preventDefault();
+      openProjectModal(videoSrc, poster, title);
+    });
+  });
+
   /* ============ 9. NAV BUTTONS — ORBITING LIGHT PATH ============ */
 
   const orbitButtons = document.querySelectorAll('.talk-btn, .nav-btn');
