@@ -286,9 +286,9 @@ img {
   align-items: center;
   justify-content: center;
   gap: 22px;
-  background: rgba(5, 3, 2, 0.97);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
+  background: rgba(5, 3, 2, 0.35);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  backdrop-filter: blur(28px) saturate(140%);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.35s ease;
