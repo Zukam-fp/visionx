@@ -9,6 +9,13 @@
     duration = video.duration;
   });
 
+  // iOS Safari largely ignores preload="auto" for <video> until playback is
+  // actually requested — without this, readyState never advances past 0 and
+  // the scroll-scrub below has no frames to show (blank background on iPhone).
+  const kickstartVideo = () => video.play().catch(() => {});
+  kickstartVideo();
+  document.addEventListener('touchstart', kickstartVideo, { once: true, passive: true });
+
   function loop() {
     requestAnimationFrame(loop);
     const dur = duration || video.duration;
