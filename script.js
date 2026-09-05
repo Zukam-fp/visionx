@@ -216,6 +216,42 @@
     });
   });
 
+  /* ============ 7b. MOBILE MENU ============ */
+
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenuClose = document.getElementById('mobileMenuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  function openMobileMenu() {
+    if (!mobileMenu) return;
+    mobileMenu.classList.add('is-open');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('mobile-menu-open');
+  }
+
+  function closeMobileMenu() {
+    if (!mobileMenu) return;
+    mobileMenu.classList.remove('is-open');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('mobile-menu-open');
+  }
+
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+      if (mobileMenu.classList.contains('is-open')) closeMobileMenu();
+      else openMobileMenu();
+    });
+    mobileMenuClose.addEventListener('click', closeMobileMenu);
+    mobileMenu.querySelectorAll('.mobile-menu-link').forEach((link) => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) closeMobileMenu();
+    });
+  }
+
   /* ============ 9. NAV BUTTONS — ORBITING LIGHT PATH ============ */
 
   const orbitButtons = document.querySelectorAll('.talk-btn, .nav-btn');
