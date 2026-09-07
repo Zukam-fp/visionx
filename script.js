@@ -197,7 +197,10 @@
     const preview = media.querySelector('.pf-video');
     const videoSrc = media.getAttribute('data-video');
     const poster = media.getAttribute('data-poster');
-    const title = media.closest('.pf-card')?.querySelector('.pf-title')?.textContent || '';
+    const title =
+      media.closest('.pf-card')?.querySelector('.pf-title')?.textContent ||
+      media.closest('#heroCard')?.querySelector('.hero-card-title')?.textContent ||
+      '';
 
     preview?.addEventListener('playing', () => media.classList.add('is-playing'));
 
