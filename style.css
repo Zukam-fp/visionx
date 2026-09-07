@@ -84,7 +84,7 @@ img {
 /* ============ 3. NAVBAR ============ */
 
 #topnav {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -93,6 +93,12 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 22px 44px;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+#topnav.nav-hidden {
+  transform: translateY(-120%);
 }
 
 #topnav .logo {
@@ -1182,6 +1188,12 @@ body {
   #svcImgs > div {
     height: 240px !important;
     flex: none !important;
+  }
+  #svcImgs[data-active="0"] .svc-img:first-child {
+    display: none !important;
+  }
+  #svcImgs[data-active="1"] .svc-img:last-child {
+    display: none !important;
   }
   #projects {
     padding: 90px 20px !important;

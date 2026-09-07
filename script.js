@@ -119,13 +119,14 @@
     },
     {
       desc: "Des interfaces claires et sans friction — structure lisible, hiérarchie visuelle nette, et des interactions qui guident sans jamais distraire.",
-      tags: ['Figma', 'Design System', 'Prototypage'],
+      tags: [],
       images: ['images/service-uiux-1.png', 'images/service-uiux-2.png'],
     },
   ];
 
   const svcImg1 = document.getElementById('svcImg1');
   const svcImg2 = document.getElementById('svcImg2');
+  const svcImgs = document.getElementById('svcImgs');
   const svcDesc = document.getElementById('svcDesc');
   const svcTags = document.getElementById('svcTags');
   const svcRows = document.querySelectorAll('.svc-row');
@@ -134,6 +135,7 @@
     const svc = services[index];
     svcImg1.src = svc.images[0];
     svcImg2.src = svc.images[1];
+    if (svcImgs) svcImgs.dataset.active = String(index);
     svcDesc.textContent = svc.desc;
     svcTags.innerHTML = '';
     svc.tags.forEach((tag) => {
@@ -249,6 +251,35 @@
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) closeMobileMenu();
+    });
+  }
+
+  /* ============ 8b. NAVBAR — HIDE ON SCROLL DOWN, SHOW ON SCROLL UP ============ */
+
+  const topnav = document.getElementById('topnav');
+  if (topnav) {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    function updateNavVisibility() {
+      const currentScrollY = window.scrollY;
+      const scrolledDown = currentScrollY > lastScrollY;
+      const pastThreshold = currentScrollY > topnav.offsetHeight;
+
+      if (scrolledDown && pastThreshold && !document.body.classList.contains('mobile-menu-open')) {
+        topnav.classList.add('nav-hidden');
+      } else {
+        topnav.classList.remove('nav-hidden');
+      }
+      lastScrollY = currentScrollY;
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateNavVisibility);
+        ticking = true;
+      }
     });
   }
 
