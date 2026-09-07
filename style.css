@@ -566,12 +566,12 @@ body.is-loaded #heroInfo {
   position: absolute;
   right: 70px;
   bottom: 6px;
-  width: 440px;
+  width: 500px;
 }
 
 .hero-card-img {
   position: relative;
-  height: 320px;
+  aspect-ratio: 16 / 9;
   border-radius: 14px;
   overflow: hidden;
 }
