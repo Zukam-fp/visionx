@@ -1143,6 +1143,9 @@ body {
 }
 
 @media (max-width: 640px) {
+  #svcTags {
+    display: none !important;
+  }
   #topnav {
     padding: 16px 20px !important;
   }
