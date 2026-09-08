@@ -1148,6 +1148,11 @@ body {
   }
   #topnav {
     padding: 16px 20px !important;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease,
+      filter 0.4s ease !important;
+  }
+  #topnav.nav-hidden {
+    filter: blur(6px);
   }
   #topnav > div:first-child {
     font-size: 20px !important;
