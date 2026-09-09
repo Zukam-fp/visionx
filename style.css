@@ -46,28 +46,6 @@ img {
   object-fit: cover;
 }
 
-.bg-video .bg-frame-layer {
-  display: none;
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-#bgImageB {
-  opacity: 0;
-}
-
-@media (max-width: 640px) {
-  .bg-video video {
-    display: none;
-  }
-  .bg-video .bg-frame-layer {
-    display: block;
-  }
-}
-
 /* Preloader */
 
 .preloader {
