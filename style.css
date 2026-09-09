@@ -596,11 +596,9 @@ body.is-loaded #heroInfo {
   opacity: 1;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .hero-card-img:hover .pf-poster,
-  .hero-card-img:hover .pf-video {
-    transform: scale(1.06);
-  }
+.hero-card-img:hover .pf-poster,
+.hero-card-img:hover .pf-video {
+  transform: scale(1.06);
 }
 
 .hero-card-bar {
@@ -735,10 +733,8 @@ body.is-loaded #heroInfo {
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .svc-img:hover img {
-    transform: scale(1.05);
-  }
+.svc-img:hover img {
+  transform: scale(1.05);
 }
 
 .svc-desc {
@@ -880,11 +876,9 @@ body.is-loaded #heroInfo {
   opacity: 1;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .pf-media:hover .pf-visual .pf-poster,
-  .pf-media:hover .pf-visual .pf-video {
-    transform: scale(1.05);
-  }
+.pf-media:hover .pf-visual .pf-poster,
+.pf-media:hover .pf-visual .pf-video {
+  transform: scale(1.05);
 }
 
 /* ── PROJECT VIDEO MODAL ───────────────────────────────── */

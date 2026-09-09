@@ -193,8 +193,6 @@
     });
   }
 
-  const canHoverPreview = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
   document.querySelectorAll('.pf-media[data-video]').forEach((media) => {
     const preview = media.querySelector('.pf-video');
     const videoSrc = media.getAttribute('data-video');
@@ -206,18 +204,16 @@
 
     preview?.addEventListener('playing', () => media.classList.add('is-playing'));
 
-    if (canHoverPreview) {
-      media.addEventListener('mouseenter', () => {
-        if (preview && !preview.src && preview.dataset.src) preview.src = preview.dataset.src;
-        preview?.play().catch(() => {});
-      });
-      media.addEventListener('mouseleave', () => {
-        media.classList.remove('is-playing');
-        if (!preview) return;
-        preview.pause();
-        preview.currentTime = 0;
-      });
-    }
+    media.addEventListener('mouseenter', () => {
+      if (preview && !preview.src && preview.dataset.src) preview.src = preview.dataset.src;
+      preview?.play().catch(() => {});
+    });
+    media.addEventListener('mouseleave', () => {
+      media.classList.remove('is-playing');
+      if (!preview) return;
+      preview.pause();
+      preview.currentTime = 0;
+    });
 
     media.addEventListener('click', (e) => {
       e.preventDefault();
