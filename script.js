@@ -29,7 +29,8 @@
       { length: FRAME_COUNT },
       (_, i) => 'images/bg-frames/frame-' + String(i).padStart(3, '0') + '.jpg'
     );
-    const bgImage = document.getElementById('bgImage');
+    const layerA = document.getElementById('bgImageA');
+    const layerB = document.getElementById('bgImageB');
 
     let loadedCount = 0;
     frameUrls.forEach((url) => {
@@ -41,10 +42,11 @@
       });
       im.src = url;
     });
-    bgImage.src = frameUrls[0];
+    layerA.src = frameUrls[0];
+    layerB.src = frameUrls[1];
 
-    let currentFrame = 0;
     let frameFloat = 0;
+    let currentFloor = -1;
 
     function loop() {
       requestAnimationFrame(loop);
@@ -53,11 +55,17 @@
       const target = progress * (FRAME_COUNT - 1);
       frameFloat += (target - frameFloat) * 0.06; // lerp smoothing — very smooth
       if (Math.abs(target - frameFloat) < 0.01) frameFloat = target;
-      const frameIndex = Math.round(frameFloat);
-      if (frameIndex !== currentFrame) {
-        currentFrame = frameIndex;
-        bgImage.src = frameUrls[frameIndex];
+
+      // Cross-fade between the two frames straddling frameFloat — opacity is
+      // compositor-only, so this stays smooth regardless of frame count.
+      const floorIndex = Math.max(0, Math.min(FRAME_COUNT - 2, Math.floor(frameFloat)));
+      const frac = Math.max(0, Math.min(1, frameFloat - floorIndex));
+      if (floorIndex !== currentFloor) {
+        currentFloor = floorIndex;
+        layerA.src = frameUrls[floorIndex];
+        layerB.src = frameUrls[floorIndex + 1];
       }
+      layerB.style.opacity = frac;
 
       updateAboutReveal();
     }
