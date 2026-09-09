@@ -12,9 +12,30 @@
   // iOS Safari largely ignores preload="auto" for <video> until playback is
   // actually requested — without this, readyState never advances past 0 and
   // the scroll-scrub below has no frames to show (blank background on iPhone).
-  const kickstartVideo = () => video.play().catch(() => {});
+  // A `poster` is set in the HTML so Safari has something to show instead of
+  // its native play button while autoplay is still pending.
+  video.muted = true;
+  const kickstartVideo = () => {
+    if (video.paused) video.play().catch(() => {});
+  };
+  const onVisible = () => {
+    if (!document.hidden) kickstartVideo();
+  };
   kickstartVideo();
-  document.addEventListener('touchstart', kickstartVideo, { once: true, passive: true });
+  video.addEventListener('canplay', kickstartVideo);
+  document.addEventListener('touchstart', kickstartVideo, { passive: true });
+  document.addEventListener('scroll', kickstartVideo, { passive: true });
+  document.addEventListener('visibilitychange', onVisible);
+  video.addEventListener(
+    'playing',
+    () => {
+      video.removeEventListener('canplay', kickstartVideo);
+      document.removeEventListener('touchstart', kickstartVideo);
+      document.removeEventListener('scroll', kickstartVideo);
+      document.removeEventListener('visibilitychange', onVisible);
+    },
+    { once: true }
+  );
 
   function loop() {
     requestAnimationFrame(loop);
