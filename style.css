@@ -1143,6 +1143,16 @@ body {
 }
 
 @media (max-width: 640px) {
+  /* Hide Safari's native centered "tap to play" affordance on the
+     background video — it can flash while autoplay is still pending. */
+  #bgVideo::-webkit-media-controls-start-playback-button,
+  #bgVideo::-webkit-media-controls-panel,
+  #bgVideo::-webkit-media-controls-play-button,
+  #bgVideo::-webkit-media-controls {
+    display: none !important;
+    -webkit-appearance: none !important;
+  }
+
   #svcTags {
     display: none !important;
   }
