@@ -1,49 +1,60 @@
 (function () {
-  /* ============ 1. PRELOADER (static background image) ============ */
+  /* ============ 1. SCROLL-SCRUBBED VIDEO ============ */
+
+  const video = document.querySelector('video');
+  let current = 0,
+    duration = 0;
+
+  video.addEventListener('loadedmetadata', () => {
+    duration = video.duration;
+  });
+
+  // iOS Safari largely ignores preload="auto" for <video> until playback is
+  // actually requested — without this, readyState never advances past 0 and
+  // the scroll-scrub below has no frames to show (blank background on iPhone).
+  const kickstartVideo = () => video.play().catch(() => {});
+  kickstartVideo();
+  document.addEventListener('touchstart', kickstartVideo, { once: true, passive: true });
+
+  function loop() {
+    requestAnimationFrame(loop);
+    const dur = duration || video.duration;
+    if (!dur) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    const target = progress * dur;
+    current += (target - current) * 0.06; // lerp smoothing — very smooth
+    if (Math.abs(target - current) < 0.01) current = target;
+    if (video.readyState >= 2 && Math.abs(video.currentTime - current) > 0.001) video.currentTime = current;
+
+    updateAboutReveal();
+  }
+  requestAnimationFrame(loop);
+
+  /* ============ PRELOADER ============ */
 
   const preloader = document.getElementById('preloader');
   const preloaderText = document.getElementById('preloader-text');
-  const bgImage = document.getElementById('bgImage');
   let hidden = false;
-  let pctTimer;
-  let fallbackTimer;
 
   function hidePreloader() {
     if (hidden) return;
     hidden = true;
-    clearInterval(pctTimer);
     clearTimeout(fallbackTimer);
-    preloaderText.textContent = '100%';
     preloader.classList.add('is-hidden');
     document.body.classList.add('is-loaded');
   }
 
-  let pct = 0;
-  pctTimer = setInterval(() => {
-    pct = Math.min(99, pct + Math.random() * 18 + 6);
-    preloaderText.textContent = Math.round(pct) + '%';
-  }, 90);
+  video.addEventListener('progress', () => {
+    if (video.buffered.length && video.duration && isFinite(video.duration)) {
+      const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+      const pct = Math.min(100, Math.round((bufferedEnd / video.duration) * 100));
+      preloaderText.textContent = pct + '%';
+    }
+  });
 
-  if (bgImage.complete) {
-    hidePreloader();
-  } else {
-    bgImage.addEventListener('load', hidePreloader, { once: true });
-  }
-  fallbackTimer = setTimeout(hidePreloader, 4000);
-
-  /* ============ 1b. SCROLL-DRIVEN "ABOUT" REVEAL SCHEDULER ============ */
-
-  let scrollTicking = false;
-  function onScrollTick() {
-    if (scrollTicking) return;
-    scrollTicking = true;
-    requestAnimationFrame(() => {
-      updateAboutReveal();
-      scrollTicking = false;
-    });
-  }
-  window.addEventListener('scroll', onScrollTick, { passive: true });
-  window.addEventListener('resize', onScrollTick);
+  video.addEventListener('canplaythrough', hidePreloader);
+  const fallbackTimer = setTimeout(hidePreloader, 6000);
 
   /* ============ 2. SCROLL-REVEAL SYSTEM ============ */
 
