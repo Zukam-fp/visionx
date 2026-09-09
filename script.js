@@ -1,62 +1,10 @@
 (function () {
-  /* ============ 1. SCROLL-SCRUBBED VIDEO ============ */
-
-  const video = document.querySelector('video');
-  let current = 0,
-    duration = 0;
-
-  video.addEventListener('loadedmetadata', () => {
-    duration = video.duration;
-  });
-
-  // iOS Safari largely ignores preload="auto" for <video> until playback is
-  // actually requested — without this, readyState never advances past 0 and
-  // the scroll-scrub below has no frames to show (blank background on iPhone).
-  // A `poster` is set in the HTML so Safari has something to show instead of
-  // its native play button while autoplay is still pending.
-  video.muted = true;
-  const kickstartVideo = () => {
-    if (video.paused) video.play().catch(() => {});
-  };
-  const onVisible = () => {
-    if (!document.hidden) kickstartVideo();
-  };
-  kickstartVideo();
-  video.addEventListener('canplay', kickstartVideo);
-  document.addEventListener('touchstart', kickstartVideo, { passive: true });
-  document.addEventListener('scroll', kickstartVideo, { passive: true });
-  document.addEventListener('visibilitychange', onVisible);
-  video.addEventListener(
-    'playing',
-    () => {
-      video.removeEventListener('canplay', kickstartVideo);
-      document.removeEventListener('touchstart', kickstartVideo);
-      document.removeEventListener('scroll', kickstartVideo);
-      document.removeEventListener('visibilitychange', onVisible);
-    },
-    { once: true }
-  );
-
-  function loop() {
-    requestAnimationFrame(loop);
-    const dur = duration || video.duration;
-    if (!dur) return;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    const target = progress * dur;
-    current += (target - current) * 0.06; // lerp smoothing — very smooth
-    if (Math.abs(target - current) < 0.01) current = target;
-    if (video.readyState >= 2 && Math.abs(video.currentTime - current) > 0.001) video.currentTime = current;
-
-    updateAboutReveal();
-  }
-  requestAnimationFrame(loop);
-
-  /* ============ PRELOADER ============ */
+  /* ============ PRELOADER (shared) ============ */
 
   const preloader = document.getElementById('preloader');
   const preloaderText = document.getElementById('preloader-text');
   let hidden = false;
+  let fallbackTimer;
 
   function hidePreloader() {
     if (hidden) return;
@@ -66,16 +14,121 @@
     document.body.classList.add('is-loaded');
   }
 
-  video.addEventListener('progress', () => {
-    if (video.buffered.length && video.duration && isFinite(video.duration)) {
-      const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-      const pct = Math.min(100, Math.round((bufferedEnd / video.duration) * 100));
-      preloaderText.textContent = pct + '%';
-    }
-  });
+  fallbackTimer = setTimeout(hidePreloader, 6000);
 
-  video.addEventListener('canplaythrough', hidePreloader);
-  const fallbackTimer = setTimeout(hidePreloader, 6000);
+  const isSmartphoneBg = window.matchMedia('(max-width: 640px)').matches;
+
+  if (isSmartphoneBg) {
+    /* ============ 1. SCROLL-SCRUBBED IMAGE SEQUENCE (smartphone only) ============
+       Same scroll-scrub animation as the tablet/desktop video, but driven by a
+       sequence of pre-extracted frames instead of an actual <video> element —
+       avoids iOS Safari's autoplay/native-play-button quirks entirely. */
+
+    const FRAME_COUNT = 48;
+    const frameUrls = Array.from(
+      { length: FRAME_COUNT },
+      (_, i) => 'images/bg-frames/frame-' + String(i).padStart(3, '0') + '.jpg'
+    );
+    const bgImage = document.getElementById('bgImage');
+
+    let loadedCount = 0;
+    frameUrls.forEach((url) => {
+      const im = new Image();
+      im.addEventListener('load', () => {
+        loadedCount += 1;
+        preloaderText.textContent = Math.round((loadedCount / FRAME_COUNT) * 100) + '%';
+        if (loadedCount >= FRAME_COUNT) hidePreloader();
+      });
+      im.src = url;
+    });
+    bgImage.src = frameUrls[0];
+
+    let currentFrame = 0;
+    let frameFloat = 0;
+
+    function loop() {
+      requestAnimationFrame(loop);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      const target = progress * (FRAME_COUNT - 1);
+      frameFloat += (target - frameFloat) * 0.06; // lerp smoothing — very smooth
+      if (Math.abs(target - frameFloat) < 0.01) frameFloat = target;
+      const frameIndex = Math.round(frameFloat);
+      if (frameIndex !== currentFrame) {
+        currentFrame = frameIndex;
+        bgImage.src = frameUrls[frameIndex];
+      }
+
+      updateAboutReveal();
+    }
+    requestAnimationFrame(loop);
+  } else {
+    /* ============ 1. SCROLL-SCRUBBED VIDEO (tablet/desktop) ============ */
+
+    const video = document.getElementById('bgVideo');
+    video.setAttribute('preload', 'auto');
+    video.src =
+      'https://cdn.sceneai.art/Hero%20section%20video%20file%20(2)/a7229fa0-6d4e-4230-9440-72f92fc0dfee.mp4';
+    let current = 0,
+      duration = 0;
+
+    video.addEventListener('loadedmetadata', () => {
+      duration = video.duration;
+    });
+
+    // iOS Safari largely ignores preload="auto" for <video> until playback is
+    // actually requested — without this, readyState never advances past 0 and
+    // the scroll-scrub below has no frames to show (blank background on iPhone).
+    // A `poster` is set in the HTML so Safari has something to show instead of
+    // its native play button while autoplay is still pending.
+    video.muted = true;
+    const kickstartVideo = () => {
+      if (video.paused) video.play().catch(() => {});
+    };
+    const onVisible = () => {
+      if (!document.hidden) kickstartVideo();
+    };
+    kickstartVideo();
+    video.addEventListener('canplay', kickstartVideo);
+    document.addEventListener('touchstart', kickstartVideo, { passive: true });
+    document.addEventListener('scroll', kickstartVideo, { passive: true });
+    document.addEventListener('visibilitychange', onVisible);
+    video.addEventListener(
+      'playing',
+      () => {
+        video.removeEventListener('canplay', kickstartVideo);
+        document.removeEventListener('touchstart', kickstartVideo);
+        document.removeEventListener('scroll', kickstartVideo);
+        document.removeEventListener('visibilitychange', onVisible);
+      },
+      { once: true }
+    );
+
+    function loop() {
+      requestAnimationFrame(loop);
+      const dur = duration || video.duration;
+      if (!dur) return;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      const target = progress * dur;
+      current += (target - current) * 0.06; // lerp smoothing — very smooth
+      if (Math.abs(target - current) < 0.01) current = target;
+      if (video.readyState >= 2 && Math.abs(video.currentTime - current) > 0.001) video.currentTime = current;
+
+      updateAboutReveal();
+    }
+    requestAnimationFrame(loop);
+
+    video.addEventListener('progress', () => {
+      if (video.buffered.length && video.duration && isFinite(video.duration)) {
+        const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+        const pct = Math.min(100, Math.round((bufferedEnd / video.duration) * 100));
+        preloaderText.textContent = pct + '%';
+      }
+    });
+
+    video.addEventListener('canplaythrough', hidePreloader);
+  }
 
   /* ============ 2. SCROLL-REVEAL SYSTEM ============ */
 

@@ -46,6 +46,22 @@ img {
   object-fit: cover;
 }
 
+.bg-video img {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .bg-video video {
+    display: none;
+  }
+  .bg-video img {
+    display: block;
+  }
+}
+
 /* Preloader */
 
 .preloader {
