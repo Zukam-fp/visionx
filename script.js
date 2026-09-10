@@ -29,8 +29,7 @@
       { length: FRAME_COUNT },
       (_, i) => 'images/bg-frames/frame-' + String(i).padStart(3, '0') + '.jpg'
     );
-    const layerA = document.getElementById('bgImageA');
-    const layerB = document.getElementById('bgImageB');
+    const frameImg = document.getElementById('bgImage');
 
     let loadedCount = 0;
     frameUrls.forEach((url) => {
@@ -42,30 +41,26 @@
       });
       im.src = url;
     });
-    layerA.src = frameUrls[0];
-    layerB.src = frameUrls[1];
+    frameImg.src = frameUrls[0];
 
     let frameFloat = 0;
-    let currentFloor = -1;
+    let currentIndex = 0;
 
     function loop() {
       requestAnimationFrame(loop);
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
       const target = progress * (FRAME_COUNT - 1);
-      frameFloat += (target - frameFloat) * 0.06; // lerp smoothing — very smooth
+      frameFloat += (target - frameFloat) * 0.06; // lerp smoothing on scroll position — motion stays smooth
       if (Math.abs(target - frameFloat) < 0.01) frameFloat = target;
 
-      // Cross-fade between the two frames straddling frameFloat — opacity is
-      // compositor-only, so this stays smooth regardless of frame count.
-      const floorIndex = Math.max(0, Math.min(FRAME_COUNT - 2, Math.floor(frameFloat)));
-      const frac = Math.max(0, Math.min(1, frameFloat - floorIndex));
-      if (floorIndex !== currentFloor) {
-        currentFloor = floorIndex;
-        layerA.src = frameUrls[floorIndex];
-        layerB.src = frameUrls[floorIndex + 1];
+      // Snap straight to the nearest frame — no cross-fade blending, just
+      // like a video's currentTime landing on a discrete frame.
+      const index = Math.max(0, Math.min(FRAME_COUNT - 1, Math.round(frameFloat)));
+      if (index !== currentIndex) {
+        currentIndex = index;
+        frameImg.src = frameUrls[index];
       }
-      layerB.style.opacity = frac;
 
       updateAboutReveal();
     }

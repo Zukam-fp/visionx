@@ -55,10 +55,6 @@ img {
   object-fit: cover;
 }
 
-#bgImageB {
-  opacity: 0;
-}
-
 @media (max-width: 640px) {
   /* Mobile browsers resize the visual viewport as their address bar
      hides/shows on scroll. Since this element is `inset: 0`, its `bottom`
