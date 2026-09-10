@@ -24,7 +24,7 @@
        sequence of pre-extracted frames instead of an actual <video> element —
        avoids iOS Safari's autoplay/native-play-button quirks entirely. */
 
-    const FRAME_COUNT = 120;
+    const FRAME_COUNT = 160;
     const frameUrls = Array.from(
       { length: FRAME_COUNT },
       (_, i) => 'images/bg-frames/frame-' + String(i).padStart(3, '0') + '.jpg'
