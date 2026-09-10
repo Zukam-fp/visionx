@@ -46,6 +46,42 @@ img {
   object-fit: cover;
 }
 
+.bg-video .bg-frame-layer {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#bgImageB {
+  opacity: 0;
+}
+
+@media (max-width: 640px) {
+  /* Mobile browsers resize the visual viewport as their address bar
+     hides/shows on scroll. Since this element is `inset: 0`, its `bottom`
+     edge tracks that live viewport and the box itself grows/shrinks as you
+     scroll — which reads as the cover-fitted background zooming in and out.
+     `lvh` is the *large* viewport height: it never changes after load, so
+     pinning height to it (and freeing `bottom` to float) stops the resize
+     without needing any scroll/resize JS. `100vh` is a fallback for browsers
+     without lvh/dvh/svh support (pre-2022) — same behavior as before there. */
+  .bg-video {
+    bottom: auto;
+    height: 100vh;
+    height: 100lvh;
+  }
+
+  .bg-video video {
+    display: none;
+  }
+  .bg-video .bg-frame-layer {
+    display: block;
+  }
+}
+
 /* Preloader */
 
 .preloader {
@@ -596,9 +632,11 @@ body.is-loaded #heroInfo {
   opacity: 1;
 }
 
-.hero-card-img:hover .pf-poster,
-.hero-card-img:hover .pf-video {
-  transform: scale(1.06);
+@media (hover: hover) and (pointer: fine) {
+  .hero-card-img:hover .pf-poster,
+  .hero-card-img:hover .pf-video {
+    transform: scale(1.06);
+  }
 }
 
 .hero-card-bar {
@@ -733,8 +771,10 @@ body.is-loaded #heroInfo {
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.svc-img:hover img {
-  transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .svc-img:hover img {
+    transform: scale(1.05);
+  }
 }
 
 .svc-desc {
@@ -876,9 +916,11 @@ body.is-loaded #heroInfo {
   opacity: 1;
 }
 
-.pf-media:hover .pf-visual .pf-poster,
-.pf-media:hover .pf-visual .pf-video {
-  transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .pf-media:hover .pf-visual .pf-poster,
+  .pf-media:hover .pf-visual .pf-video {
+    transform: scale(1.05);
+  }
 }
 
 /* ── PROJECT VIDEO MODAL ───────────────────────────────── */
@@ -1143,16 +1185,6 @@ body {
 }
 
 @media (max-width: 640px) {
-  /* Hide Safari's native centered "tap to play" affordance on the
-     background video — it can flash while autoplay is still pending. */
-  #bgVideo::-webkit-media-controls-start-playback-button,
-  #bgVideo::-webkit-media-controls-panel,
-  #bgVideo::-webkit-media-controls-play-button,
-  #bgVideo::-webkit-media-controls {
-    display: none !important;
-    -webkit-appearance: none !important;
-  }
-
   #svcTags {
     display: none !important;
   }
