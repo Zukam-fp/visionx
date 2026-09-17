@@ -283,9 +283,12 @@
 
     preview?.addEventListener('playing', () => media.classList.add('is-playing'));
 
+    const rate = parseFloat(media.dataset.rate) || 1;
+
     if (canHoverPreview) {
       media.addEventListener('mouseenter', () => {
         if (preview && !preview.src && preview.dataset.src) preview.src = preview.dataset.src;
+        if (preview) preview.playbackRate = rate;
         preview?.play().catch(() => {});
       });
       media.addEventListener('mouseleave', () => {
