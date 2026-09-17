@@ -238,7 +238,7 @@
   const pfModalClose = document.getElementById('pfModalClose');
   const pfModalTitle = document.getElementById('pfModalTitle');
 
-  function openProjectModal(src, poster, title) {
+  function openProjectModal(src, poster, title, rate) {
     if (!src || !pfModal) return;
     pfModalVideo.src = src;
     pfModalVideo.poster = poster || '';
@@ -247,6 +247,7 @@
     pfModal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
     pfModalVideo.currentTime = 0;
+    pfModalVideo.playbackRate = rate || 1;
     pfModalVideo.play().catch(() => {});
   }
 
@@ -301,7 +302,7 @@
 
     media.addEventListener('click', (e) => {
       e.preventDefault();
-      openProjectModal(videoSrc, poster, title);
+      openProjectModal(videoSrc, poster, title, rate);
     });
   });
 
