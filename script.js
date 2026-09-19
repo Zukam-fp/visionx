@@ -273,6 +273,26 @@
 
   const canHoverPreview = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+  // On mobile, swap in the mobile-recorded capture for each project card so the
+  // modal (tap-to-open) shows a video of the actual mobile layout instead of desktop.
+  // Desktop is untouched — this block only runs when isSmartphoneBg is true.
+  if (isSmartphoneBg) {
+    document.querySelectorAll('.pf-media[data-video-mobile]').forEach((media) => {
+      const mobileVideo = media.getAttribute('data-video-mobile');
+      const mobilePoster = media.getAttribute('data-poster-mobile');
+      if (mobileVideo) {
+        media.setAttribute('data-video', mobileVideo);
+        const previewVideo = media.querySelector('.pf-video');
+        if (previewVideo) previewVideo.dataset.src = mobileVideo;
+      }
+      if (mobilePoster) {
+        media.setAttribute('data-poster', mobilePoster);
+        const posterImg = media.querySelector('.pf-poster');
+        if (posterImg) posterImg.src = mobilePoster;
+      }
+    });
+  }
+
   document.querySelectorAll('.pf-media[data-video]').forEach((media) => {
     const preview = media.querySelector('.pf-video');
     const videoSrc = media.getAttribute('data-video');
