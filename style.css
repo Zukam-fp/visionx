@@ -1266,7 +1266,20 @@ body {
     gap: 80px !important;
   }
   #pfGrid img {
-    max-height: 380px !important;
+    max-height: none !important;
+  }
+  .pf-visual {
+    max-width: none !important;
+    aspect-ratio: 9 / 16 !important;
+  }
+  .pf-modal {
+    padding: 24px !important;
+  }
+  .pf-modal-inner {
+    max-width: 360px !important;
+  }
+  .pf-modal-video {
+    aspect-ratio: 9 / 16 !important;
   }
   #pfGrid > div > div > div:nth-of-type(2) {
     font-size: 24px !important;
