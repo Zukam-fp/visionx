@@ -18,120 +18,58 @@
 
   const isSmartphoneBg = window.matchMedia('(max-width: 640px)').matches;
 
-  if (isSmartphoneBg) {
-    /* ============ 1. SCROLL-SCRUBBED IMAGE SEQUENCE (smartphone only) ============
-       Same scroll-scrub animation as the tablet/desktop video, but driven by a
-       sequence of pre-extracted frames instead of an actual <video> element —
-       avoids iOS Safari's autoplay/native-play-button quirks entirely. */
+  /* ============ 1. SCROLL-SCRUBBED IMAGE SEQUENCE (all breakpoints) ============
+     Same scroll-scrub animation on mobile, tablet and desktop, driven by a
+     sequence of pre-extracted frames instead of an actual <video> element —
+     avoids autoplay/native-play-button quirks and keeps every breakpoint in sync. */
 
-    const FRAME_COUNT = 160;
-    const frameUrls = Array.from(
-      { length: FRAME_COUNT },
-      (_, i) => 'images/bg-frames/frame-' + String(i).padStart(3, '0') + '.jpg'
-    );
-    const frameImg = document.getElementById('bgImage');
+  const FRAME_COUNT = 192;
+  const frameUrls = Array.from(
+    { length: FRAME_COUNT },
+    (_, i) => 'images/bg-frames/frame-' + String(i).padStart(3, '0') + '.webp'
+  );
+  const frameImg = document.getElementById('bgImage');
 
-    let loadedCount = 0;
-    frameUrls.forEach((url) => {
-      const im = new Image();
-      im.addEventListener('load', () => {
-        loadedCount += 1;
-        preloaderText.textContent = Math.round((loadedCount / FRAME_COUNT) * 100) + '%';
-        if (loadedCount >= FRAME_COUNT) hidePreloader();
-      });
-      im.src = url;
+  let loadedCount = 0;
+  frameUrls.forEach((url) => {
+    const im = new Image();
+    im.addEventListener('load', () => {
+      loadedCount += 1;
+      preloaderText.textContent = Math.round((loadedCount / FRAME_COUNT) * 100) + '%';
+      if (loadedCount >= FRAME_COUNT) hidePreloader();
     });
-    frameImg.src = frameUrls[0];
+    im.src = url;
+  });
+  frameImg.src = frameUrls[0];
 
-    let frameFloat = 0;
-    let currentIndex = 0;
+  let frameFloat = 0;
+  let currentIndex = 0;
+  let lastSwapTime = 0;
+  // The source video is natively 24fps, so there's no real motion data to show
+  // faster than this — throttling the swap to that cadence cuts the number of
+  // expensive image paints during fast scrolling without any visible smoothness loss.
+  const MIN_SWAP_INTERVAL_MS = 1000 / 24;
 
-    function loop() {
-      requestAnimationFrame(loop);
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      const target = progress * (FRAME_COUNT - 1);
-      frameFloat += (target - frameFloat) * 0.06; // lerp smoothing on scroll position — motion stays smooth
-      if (Math.abs(target - frameFloat) < 0.01) frameFloat = target;
-
-      // Snap straight to the nearest frame — no cross-fade blending, just
-      // like a video's currentTime landing on a discrete frame.
-      const index = Math.max(0, Math.min(FRAME_COUNT - 1, Math.round(frameFloat)));
-      if (index !== currentIndex) {
-        currentIndex = index;
-        frameImg.src = frameUrls[index];
-      }
-
-      updateAboutReveal();
-    }
+  function loop(now) {
     requestAnimationFrame(loop);
-  } else {
-    /* ============ 1. SCROLL-SCRUBBED VIDEO (tablet/desktop) ============ */
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    const target = progress * (FRAME_COUNT - 1);
+    frameFloat += (target - frameFloat) * 0.06; // lerp smoothing on scroll position — motion stays smooth
+    if (Math.abs(target - frameFloat) < 0.01) frameFloat = target;
 
-    const video = document.getElementById('bgVideo');
-    video.setAttribute('preload', 'auto');
-    video.src =
-      'https://cdn.sceneai.art/Hero%20section%20video%20file%20(2)/a7229fa0-6d4e-4230-9440-72f92fc0dfee.mp4';
-    let current = 0,
-      duration = 0;
-
-    video.addEventListener('loadedmetadata', () => {
-      duration = video.duration;
-    });
-
-    // iOS Safari largely ignores preload="auto" for <video> until playback is
-    // actually requested — without this, readyState never advances past 0 and
-    // the scroll-scrub below has no frames to show (blank background on iPhone).
-    // A `poster` is set in the HTML so Safari has something to show instead of
-    // its native play button while autoplay is still pending.
-    video.muted = true;
-    const kickstartVideo = () => {
-      if (video.paused) video.play().catch(() => {});
-    };
-    const onVisible = () => {
-      if (!document.hidden) kickstartVideo();
-    };
-    kickstartVideo();
-    video.addEventListener('canplay', kickstartVideo);
-    document.addEventListener('touchstart', kickstartVideo, { passive: true });
-    document.addEventListener('scroll', kickstartVideo, { passive: true });
-    document.addEventListener('visibilitychange', onVisible);
-    video.addEventListener(
-      'playing',
-      () => {
-        video.removeEventListener('canplay', kickstartVideo);
-        document.removeEventListener('touchstart', kickstartVideo);
-        document.removeEventListener('scroll', kickstartVideo);
-        document.removeEventListener('visibilitychange', onVisible);
-      },
-      { once: true }
-    );
-
-    function loop() {
-      requestAnimationFrame(loop);
-      const dur = duration || video.duration;
-      if (!dur) return;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      const target = progress * dur;
-      current += (target - current) * 0.06; // lerp smoothing — very smooth
-      if (Math.abs(target - current) < 0.01) current = target;
-      if (video.readyState >= 2 && Math.abs(video.currentTime - current) > 0.001) video.currentTime = current;
-
-      updateAboutReveal();
+    // Snap straight to the nearest frame — no cross-fade blending, just
+    // like a video's currentTime landing on a discrete frame.
+    const index = Math.max(0, Math.min(FRAME_COUNT - 1, Math.round(frameFloat)));
+    if (index !== currentIndex && now - lastSwapTime >= MIN_SWAP_INTERVAL_MS) {
+      currentIndex = index;
+      lastSwapTime = now;
+      frameImg.src = frameUrls[index];
     }
-    requestAnimationFrame(loop);
 
-    video.addEventListener('progress', () => {
-      if (video.buffered.length && video.duration && isFinite(video.duration)) {
-        const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-        const pct = Math.min(100, Math.round((bufferedEnd / video.duration) * 100));
-        preloaderText.textContent = pct + '%';
-      }
-    });
-
-    video.addEventListener('canplaythrough', hidePreloader);
+    updateAboutReveal();
   }
+  requestAnimationFrame(loop);
 
   /* ============ 2. SCROLL-REVEAL SYSTEM ============ */
 
@@ -171,6 +109,7 @@
   });
 
   const aboutWords = aboutText.querySelectorAll('.w');
+  let lastRevealCount = -1;
 
   function updateAboutReveal() {
     const rect = aboutText.getBoundingClientRect();
@@ -180,6 +119,8 @@
     let progress = (start - rect.top) / (start - end);
     progress = Math.min(1, Math.max(0, progress));
     const revealCount = Math.round(progress * aboutWords.length);
+    if (revealCount === lastRevealCount) return; // skip DOM writes when nothing changed this tick
+    lastRevealCount = revealCount;
     aboutWords.forEach((w, i) => {
       w.style.color = i < revealCount ? '#ffffff' : 'rgba(255, 255, 255, 0.35)';
     });
