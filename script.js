@@ -91,7 +91,7 @@
 
   const aboutLines = [
     'Le meilleur code ne se voit pas.',
-    'Il se ressent — dans la fluidité, /',
+    'Il se ressent, dans la fluidité,',
     'la clarté de chaque interaction,',
     'et ce qui reste après le clic.',
   ];
@@ -131,14 +131,19 @@
 
   const services = [
     {
-      desc: 'On construit des applications web complètes — base de données, logique métier et interface — pensées pour tenir en production, pas juste pour la démo.',
+      desc: 'On construit des applications web complètes, base de données, logique métier et interface, pensées pour tenir en production, pas juste pour la démo.',
       tags: ['Next.js', 'Node.js', 'Prisma'],
       images: ['images/service-fullstack-1.png', 'images/service-fullstack-2.png'],
     },
     {
-      desc: "Des interfaces claires et sans friction — structure lisible, hiérarchie visuelle nette, et des interactions qui guident sans jamais distraire.",
+      desc: "Des interfaces claires et sans friction, structure lisible, hiérarchie visuelle nette, et des interactions qui guident sans jamais distraire.",
       tags: [],
       images: ['images/service-uiux-1.png', 'images/service-uiux-2.png'],
+    },
+    {
+      desc: 'On travaille la structure technique, le contenu et la performance du site pour qu\'il soit bien compris, et bien classé, par les moteurs de recherche.',
+      tags: ['Core Web Vitals', 'Structured Data', 'Analytics'],
+      images: ['images/service-seo-1.png', 'images/service-seo-2.png'],
     },
   ];
 
