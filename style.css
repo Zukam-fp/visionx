@@ -788,6 +788,95 @@ body.is-loaded #heroInfo {
   }
 }
 
+/* ============ 6.5 WHY A WEBSITE ============ */
+
+#why-web,
+#why-app {
+  padding: 130px 70px;
+}
+
+.why-intro {
+  margin-top: 36px;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.why-intro p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.why-hook {
+  font-size: 22px !important;
+  font-weight: 500;
+  color: #ffffff !important;
+}
+
+.why-grid {
+  margin-top: 80px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.why-card {
+  position: relative;
+  padding: 36px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .why-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(241, 78, 12, 0.45);
+    transform: translateY(-6px);
+  }
+}
+
+.why-card-num {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.why-card h3 {
+  margin: 18px 0 12px;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.why-card p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.why-cta {
+  margin-top: 90px;
+  padding-top: 60px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.why-cta-title {
+  margin: 0;
+  max-width: 700px;
+  font-size: clamp(28px, 2.8vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
 /* ============ 7. BEST PORTFOLIO ============ */
 
 #projects {
@@ -829,7 +918,7 @@ body.is-loaded #heroInfo {
 #pfTitle {
   margin: 0;
   padding-left: 16%;
-  font-size: clamp(46px, 4.4vw, 74px);
+  font-size: clamp(34px, 3.2vw, 54px);
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -1120,6 +1209,8 @@ body {
   }
   #about,
   #services,
+  #why-web,
+  #why-app,
   #projects,
   #about-me {
     padding-left: 40px !important;
@@ -1141,6 +1232,14 @@ body {
   #svcImgs > div {
     height: 320px !important;
   }
+  .why-grid {
+    grid-template-columns: 1fr !important;
+    margin-top: 50px !important;
+  }
+  .why-cta {
+    margin-top: 60px !important;
+    padding-top: 40px !important;
+  }
   #pfGrid {
     grid-template-columns: 1fr !important;
   }
@@ -1156,7 +1255,7 @@ body {
     padding-left: 0 !important;
     width: auto !important;
     height: auto !important;
-    font-size: clamp(38px, 6vw, 74px) !important;
+    font-size: clamp(30px, 5vw, 54px) !important;
   }
   #amGrid {
     grid-template-columns: 1fr !important;
@@ -1238,6 +1337,13 @@ body {
   }
   #svcImgs {
     display: none !important;
+  }
+  #why-web,
+  #why-app {
+    padding: 80px 20px !important;
+  }
+  .why-card {
+    padding: 26px !important;
   }
   #projects {
     padding: 90px 20px !important;
